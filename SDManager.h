@@ -1,7 +1,8 @@
+#include <Arduino.h>
 
 #ifndef _SDMANAGER_H_
 #define _SDMANAGER_H_
-#include "Arduino.h"
+
 #include <SPI.h>
 #include <SD.h>
 

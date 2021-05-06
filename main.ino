@@ -1,7 +1,7 @@
 #include "recorder.h"
 #include "data.h"
 #include "BluetoothSerial.h"
-
+#include "connection.h"
 #include "configuration.h"
 #include "SDManager.h"
 
@@ -9,9 +9,11 @@
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
 
+//create the bluetooth serial object
 BluetoothSerial SerialBT;
-
+// recorder object
 Recorder* recorder {nullptr};
+// datas loaded
 Datas* datas {nullptr};
 
 
@@ -26,10 +28,11 @@ bool is_updated(){
 
 void setup() {
   // put your setup code here, to run once:
+  #if DEVELOPPEMENT
   Serial.begin(9600);
+  #endif
 
-
-
+  SDManager::init_SD_load();
   SerialBT.begin("BikeSensor"); 
 
   if(!is_updated()){

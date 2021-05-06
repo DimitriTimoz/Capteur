@@ -33,7 +33,9 @@ public:
   ~Datas(){
     delete [] datas;
   }
-  bool add_data();    
+  bool add_data(); 
+  bool save(); 
+  bool load();
 
 private:
   int index {0};
