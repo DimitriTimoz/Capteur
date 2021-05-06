@@ -6,8 +6,4 @@
 //Pin SD_CS is the CS pin on the card 
 #define SD_CS 5
 
-
-class Configuration{
-
-};
 #endif
