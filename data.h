@@ -1,5 +1,8 @@
 #ifndef _DATA_H_
 #define _DATA_H_
+#include "configuration.h"
+#include <Arduino.h>
+#include "SDManager.h"
 
 class Data{
 public:
@@ -19,26 +22,35 @@ public:
   Data(){
     
   }
+
+  void clear();
 }; 
 
 class Datas{
 public:
   Data* datas;
-  int length {0};
-  
+  SDManager* sd_manager;
+
   Datas(){
-    datas = new Data[length];
+    datas = new Data[MAX_COUNT_FILE];
+    sd_manager = new SDManager;
   }
 
   ~Datas(){
     delete [] datas;
+    delete sd_manager;
   }
-  bool add_data(); 
-  bool save(); 
+  void add_data(Data data); 
+  void save(); 
   bool load();
 
 private:
+  String record_token {"df45gdfds"};
+  int record_partition_index{0};
   int index {0};
+  
+  void clear();
+  void new_partition();
 
 };
 

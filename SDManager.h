@@ -1,22 +1,24 @@
-#include <Arduino.h>
 
 #ifndef _SDMANAGER_H_
 #define _SDMANAGER_H_
 
+#include <Arduino.h>
 #include <SPI.h>
 #include <SD.h>
 
 
 class SDManager{
   public:
-    static File current_file; 
-    static void init_SD_load();
-    static void load_file(String path);
-    static String get_file_content_str();
-    static byte* get_file_content_byte();
+    File current_file; 
+    void init_SD_load();
+    void load_file(String path, char mode = 'r');
+    String get_file_content_str();
+    size_t get_file_content_byte(char *buffer, size_t length);
+    void save_file(String* content, String* file_name);
+    inline void close_file(){ if(current_file ){current_file.close();} return;}
   private:
-    static String actual_path;
-    static bool load_mode;
-    static bool read_mode;
+    String actual_path;
+    bool write_mode;
+    bool read_mode;
 };
 #endif

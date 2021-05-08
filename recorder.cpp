@@ -1,13 +1,14 @@
-@ 
+#include <Arduino.h>
 #include "recorder.h"
-
+#include "data.h"
 
 
 //Contructors
-Recorder::Recorder(int length_val):
-  length {length_val}
+Recorder::Recorder(int length_val, Datas* data_var):
+  length {length_val}, all_data{data_var}
 {
   data = new float[length_val];
+  actual_data = new Data(0,0,0,0);
   for(int i{0}; i < length_val; i++){
     at(i, 0);    
   }
@@ -33,8 +34,6 @@ float Recorder::record_value(float x){
 }
 
 
-
-
 // int methods
 int Recorder::get_index(int index){
   return (index+ length) % length;
@@ -48,14 +47,60 @@ void Recorder::mean_data(int n){
 
 void Recorder::update(){
   //record
-  at(last_index, record_value((double)last_index));
-
+  actual = record_value((double)last_index);
+  at(last_index, actual);
+  Serial.print(String(at(last_index)));
   //mean
   sum += at(last_index);
-  mean_data(4);
-  at(last_index, sum/4);
+  mean_data(MEAN_COUNT);
+  actual = sum/MEAN_COUNT;
+  at(last_index, actual);
+  Serial.print(',');
+ 
+  Serial.print(String(decline));
+
+  Serial.print(',');
+  Serial.println(String(at(last_index)));
+  variation_calcul();
+  min_and_max_calcul();
   //Index
   last_index++;
   update_index();
 
 }
+
+void Recorder::variation_calcul(){
+ if((actual >= at(last_index-1)) != decline ){
+  count++;
+  variation_count++;
+  if(count >= RANGE){
+    if(decline){
+      actual_data->decline_rate = sum_variation/float(variation_count);
+    }else{
+      actual_data->grow_rate;
+      Serial.println("here");
+      all_data->add_data(*actual_data);
+    }
+    decline = !decline;
+    count = 0;
+    variation_count = 0;
+    sum_variation = 0.0;
+    
+  }
+ }
+  sum_variation += at(last_index);
+
+}
+
+void Recorder::min_and_max_calcul(){
+  
+  if(actual_data->min > actual){
+    actual_data->min = actual; 
+  }
+
+  if(actual_data->max < actual){
+    actual_data->max = actual; 
+  }
+}
+
+

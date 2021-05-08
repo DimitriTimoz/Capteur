@@ -1,13 +1,9 @@
 #include "recorder.h"
 #include "data.h"
-
+#include "BluetoothSerial.h"
 #include "connection.h"
 #include "configuration.h"
 #include "SDManager.h"
-
-#if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
-#error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
-#endif
 
 
 // recorder object
@@ -15,27 +11,24 @@ Recorder* recorder {nullptr};
 // datas loaded
 Datas* datas {nullptr};
 
-Connection connection("BikeSensor");
+SDManager* sd_manager {nullptr};
 
-bool is_updated(){
-  return false;
-}
+Connection* connection {nullptr};
+
 
 void setup() {
-  // put your setup code here, to run once:
   #if DEVELOPPEMENT
-  Serial.begin(9600);
+  Serial.begin(115200);
   #endif
-
-  SDManager::init_SD_load();
-
-
-  recorder = new Recorder(100);
+  connection = new Connection();
+  connection->init_connection("BikeSensor");
+  sd_manager = new SDManager();
+  sd_manager->init_SD_load();
+  datas = new Datas();
+  recorder = new Recorder(100, datas); 
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
   recorder->update();
-
   delay(20);
 }
