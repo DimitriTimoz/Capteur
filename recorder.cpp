@@ -49,18 +49,12 @@ void Recorder::update(){
   //record
   actual = record_value((double)last_index);
   at(last_index, actual);
-  Serial.print(String(at(last_index)));
   //mean
   sum += at(last_index);
   mean_data(MEAN_COUNT);
   actual = sum/MEAN_COUNT;
   at(last_index, actual);
-  Serial.print(',');
  
-  Serial.print(String(decline));
-
-  Serial.print(',');
-  Serial.println(String(at(last_index)));
   variation_calcul();
   min_and_max_calcul();
   //Index
@@ -78,7 +72,6 @@ void Recorder::variation_calcul(){
       actual_data->decline_rate = sum_variation/float(variation_count);
     }else{
       actual_data->grow_rate;
-      Serial.println("here");
       all_data->add_data(*actual_data);
     }
     decline = !decline;

@@ -21,26 +21,26 @@ void SDManager::init_SD_load(){
   Serial.println("Initializing done.");
 
 }
-void SDManager::load_file(String path, char mode){
+void SDManager::load_file(String *path, char mode){
   
     if(mode == 'r'){
-      if(SD.exists(path)){
-        current_file = SD.open(path, FILE_READ);
+      if(SD.exists(*path)){
+        current_file = SD.open(*path, FILE_READ);
         read_mode = true;
         write_mode = false;
       }else{
-        Serial.println("The file " + path + " doesn't exist.");
+        Serial.println("The file " + *path + " doesn't exist.");
         return;
       }
     }else if(mode == 'w') {
-      current_file = SD.open(path, FILE_WRITE);
+      current_file = SD.open(*path, FILE_WRITE);
       read_mode = false;
       write_mode = true;
     }else{
-      Serial.println(path + " can't be open, the open mode is not correctly specified.");
+      Serial.println(*path + " can't be open, the open mode is not correctly specified.");
       return;
     }
-    Serial.println(path + " was correctly opened.");
+    Serial.println(*path + " was correctly opened.");
     return;
   
 }
@@ -57,19 +57,27 @@ size_t SDManager::get_file_content_byte(char *buffer, size_t length){
    }
  }
 
-void SDManager::save_file(String * content, String* file_name){
-  load_file(*file_name + ".csv", 'w');
-  if(write_mode && current_file){
-    current_file.println(*content);
-    current_file.close();
-    Serial.println(*file_name + ".csv was correctly saved.");
+void SDManager::create_file(String* path){
+  current_file = SD.open(*path, FILE_APPEND);
+  close_file();
+}
 
-  }else{
-    Serial.println(*file_name + ".csv can't be opened.");
+void SDManager::write_file(String* path, String *content){
+  load_file(path, 'w');
+  current_file.print(*content);
+  close_file();
+}
 
-  }
-  
-  load_file(*file_name + ".csv", 'r');
-  
+String SDManager::read_file(String *path){
+  load_file(path, 'r');
+  String content = get_file_content_str();
+  close_file();
+  return content;
+
+}
+void SDManager::save_file(String *content, String *path){
+  create_file(path);
+  write_file(path, content);
+  Serial.println("File saved.");
 
 }

@@ -12,10 +12,11 @@
 class Connection{
 public:
   BluetoothSerial SerialBT;  
-  inline bool is_connected(){ return connected;};
+  inline bool is_connected(void){ return SerialBT.hasClient();};
   bool send(String);
   void new_data(String);
   void init_connection(String);
+  void loop(void);
 private:
   bool connected{false};
   //create the bluetooth serial object

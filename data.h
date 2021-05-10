@@ -41,14 +41,14 @@ public:
     delete sd_manager;
   }
   void add_data(Data data); 
-  void save(); 
+  String save(); 
   bool load();
 
 private:
   String record_token {"df45gdfds"};
   int record_partition_index{0};
   int index {0};
-  
+  String* list;
   void clear();
   void new_partition();
 

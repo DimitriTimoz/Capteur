@@ -25,10 +25,13 @@ void setup() {
   sd_manager = new SDManager();
   sd_manager->init_SD_load();
   datas = new Datas();
-  recorder = new Recorder(100, datas); 
+  recorder = new Recorder(MAX_RECORD_RANGE, datas); 
 }
 
 void loop() {
   recorder->update();
-  delay(20);
+  connection->loop();
+  Serial.println(connection->is_connected());
+  delay(10);
 }
+
