@@ -25,13 +25,14 @@
 class Config{
 public:
  size_t length_to_send{0};
- String* to_send;
+ String* to_send {nullptr};
 
- void add_to_save(String);
- void remove_to_save(String);
+ void add_to_save(const String);
+ void remove_to_save(const String);
 
  void save(void);
  void load(void);
+
 };
 #endif
 
