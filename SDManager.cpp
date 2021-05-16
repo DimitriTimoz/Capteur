@@ -22,16 +22,16 @@ void SDManager::init_SD_load(){
 
 }
 void SDManager::load_file(String *path, char mode){
-  
+    if(current_file){
+      close_file();
+    }
+    if(!SD.exists(*path)){
+      create_file(path);
+    }
     if(mode == 'r'){
-      if(SD.exists(*path)){
-        current_file = SD.open(*path, FILE_READ);
-        read_mode = true;
-        write_mode = false;
-      }else{
-        Serial.println("The file " + *path + " doesn't exist.");
-        return;
-      }
+      current_file = SD.open(*path, FILE_READ);
+      read_mode = true;
+      write_mode = false;
     }else if(mode == 'w') {
       current_file = SD.open(*path, FILE_WRITE);
       read_mode = false;
@@ -58,14 +58,19 @@ size_t SDManager::get_file_content_byte(char *buffer, size_t length){
  }
 
 void SDManager::create_file(String* path){
+  if(SD.exists(*path)){
+    SD.remove(*path);
+  }
   current_file = SD.open(*path, FILE_APPEND);
   close_file();
 }
 
-void SDManager::write_file(String* path, String *content){
-  load_file(path, 'w');
+void SDManager::write_file(String* path, String *content, bool reload){
+  if(reload)
+    load_file(path, 'w');
   current_file.print(*content);
-  close_file();
+  if(reload)
+    close_file();
 }
 
 String SDManager::read_file(String *path){
@@ -75,9 +80,16 @@ String SDManager::read_file(String *path){
   return content;
 
 }
+void SDManager::add_in_file(String *path, String *content){
+  write_file(path, content);
+
+}
+
 void SDManager::save_file(String *content, String *path){
   create_file(path);
   write_file(path, content);
-  Serial.println("File saved.");
+}
 
+bool SDManager::exist(String path){
+  return SD.exists(path);
 }

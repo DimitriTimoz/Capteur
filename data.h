@@ -6,13 +6,13 @@
 
 class Data{
 public:
-  float max{0};
-  float min{0};
+  short int max{0};
+  short int min{0};
 
   float grow_rate{0};
   float decline_rate{0};
 
-  Data(float min_val, float max_val, float grow_val, float decline_val){
+  Data(short int min_val, short int max_val, float grow_val, float decline_val){
     max = max_val;
     min = min_val;
     grow_rate = grow_val;
@@ -34,6 +34,7 @@ public:
   Datas(){
     datas = new Data[MAX_COUNT_FILE];
     sd_manager = new SDManager;
+    new_token();
   }
 
   ~Datas(){
@@ -41,17 +42,20 @@ public:
     delete sd_manager;
   }
   void add_data(Data data); 
-  String save(); 
-  bool load();
+  void save(void); 
+  void load(char token[5], int partition);
 
 private:
-  String record_token {"df45gdfds"};
+  size_t token_length{5};
+  char record_token[5];
   int record_partition_index{0};
   int index {0};
   String* list;
-  void clear();
-  void new_partition();
-
+  void new_token();
+  void clear(void);
+  void new_partition(void);
+  void load_config(char token[5]);
+  void save_config(void);
 };
 
 

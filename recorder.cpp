@@ -7,7 +7,7 @@
 Recorder::Recorder(int length_val, Datas* data_var):
   length {length_val}, all_data{data_var}
 {
-  data = new float[length_val];
+  data = new short[length_val];
   actual_data = new Data(0,0,0,0);
   for(int i{0}; i < length_val; i++){
     at(i, 0);    
@@ -15,16 +15,16 @@ Recorder::Recorder(int length_val, Datas* data_var):
 }
 
 // float methods
-float Recorder::at(int index){
+short Recorder::at(int index){
   return data[get_index(index)];
 }
 
-float Recorder::at(int index, float value){
+short Recorder::at(int index, short value){
   data[get_index(index)] = value;
   return value;
 }
 
-float Recorder::record_value(float x){
+short Recorder::record_value(float x){
   x /= 15; 
   double cosArr {(cos(x)+1)};
 
@@ -45,7 +45,7 @@ void Recorder::mean_data(int n){
   sum -= at(last_index-n);
 }
 
-void Recorder::update(){
+void Recorder::update(void){
   //record
   actual = record_value((double)last_index);
   at(last_index, actual);
@@ -63,7 +63,7 @@ void Recorder::update(){
 
 }
 
-void Recorder::variation_calcul(){
+void Recorder::variation_calcul(void){
  if((actual >= at(last_index-1)) != decline ){
   count++;
   variation_count++;
@@ -85,7 +85,7 @@ void Recorder::variation_calcul(){
 
 }
 
-void Recorder::min_and_max_calcul(){
+void Recorder::min_and_max_calcul(void){
   
   if(actual_data->min > actual){
     actual_data->min = actual; 

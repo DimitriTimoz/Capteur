@@ -11,3 +11,22 @@ void Connection::loop(void){
     Serial.write(SerialBT.read());
   }
 }
+
+void Connection::send(char* data, size_t length){
+    for(int i{0}; i < length; i++){
+      SerialBT.write(*(data + i));
+    }
+}
+
+void Connection::send(String* data){
+    for(int i{0}; i < data->length(); i++){
+      uint8_t c = (*data)[i];
+      SerialBT.write(c);
+    }
+}
+
+void Connection::send(String data){
+    for(int i{0}; i < data.length(); i++){
+      SerialBT.write(data[i]);
+    }
+}

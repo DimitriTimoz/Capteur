@@ -18,7 +18,7 @@ Connection* connection {nullptr};
 
 void setup() {
   #if DEVELOPPEMENT
-  Serial.begin(115200);
+  Serial.begin(SERIAL_BAUD);
   #endif
   connection = new Connection();
   connection->init_connection("BikeSensor");
@@ -31,7 +31,6 @@ void setup() {
 void loop() {
   recorder->update();
   connection->loop();
-  Serial.println(connection->is_connected());
-  delay(10);
+
 }
 
