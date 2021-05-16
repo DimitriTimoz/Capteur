@@ -1,6 +1,8 @@
 #include "data.h"
 #include <Arduino.h>
 #include "configuration.h"
+#include <ArduinoJson.h>
+
 /*
   DATA
 */
@@ -59,7 +61,9 @@ void Datas::new_token(){
 }
 
 void Datas::save_config(){
+  
   String name_file {"/" + String(record_token) + ".conf"};
   sd_manager->create_file(&name_file);
+  
 }
 

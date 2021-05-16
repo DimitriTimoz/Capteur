@@ -1,6 +1,8 @@
 #ifndef _CONFIGURATION_H_
 #define _CONFIGURATION_H_
 
+#include <Arduino.h>
+
 // true: is in developpement mode
 #define DEVELOPPEMENT false
 //Pin SD_CS is the CS pin on the card 
@@ -19,4 +21,17 @@
 #define RANGE 4
 // the number of data in a range
 #define MAX_RECORD_RANGE 500
+
+class Config{
+public:
+ size_t length_to_send{0};
+ String* to_send;
+
+ void add_to_save(String);
+ void remove_to_save(String);
+
+ void save(void);
+ void load(void);
+};
 #endif
+
