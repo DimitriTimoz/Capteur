@@ -11,7 +11,7 @@ public:
   Data* actual_data {nullptr};
   Datas* all_data {nullptr};
   short *data {nullptr};
-  short  actual{0};
+  short actual{0};
   int length;
   Recorder(int, Datas*);
 

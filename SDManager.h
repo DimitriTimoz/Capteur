@@ -10,7 +10,6 @@
 class SDManager{
   public:
     File current_file; 
-    void init_SD_load();
     void load_file(String *path, char mode = 'r');
     String get_file_content_str();
     size_t get_file_content_byte(char *buffer, size_t length);

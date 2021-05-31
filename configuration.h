@@ -2,6 +2,8 @@
 #define _CONFIGURATION_H_
 
 #include <Arduino.h>
+#include "SDManager.h"
+#include "connection.h"
 
 // true: is in developpement mode
 #define DEVELOPPEMENT false
@@ -22,16 +24,26 @@
 // the number of data in a range
 #define MAX_RECORD_RANGE 500
 
+#define PIN_LEFT 11
+#define PIN_CODDER 12
+#define PIN_RIGHT 13
+
+
 class Config{
 public:
- size_t length_to_send{0};
- String* to_send {nullptr};
+  int length_to_send{0};
+  String* to_send {nullptr};
+  SDManager* sd_manager {nullptr};
+  Connection* connection {nullptr};
+  Config(SDManager *manager, Connection *con){
+    connection = con;
+    sd_manager = manager;
+  }
+  void add_to_save(const String);
+  void remove_to_save(const String);
 
- void add_to_save(const String);
- void remove_to_save(const String);
-
- void save(void);
- void load(void);
+  void save(void);
+  void load(void);
 
 };
 #endif

@@ -12,7 +12,7 @@
 class Connection{
 public:
   BluetoothSerial SerialBT;  
-  inline bool is_connected(void){ return false;};
+  inline bool is_connected(void){ return SerialBT.connected();};
   void send(char* data, size_t length);
   void send(String* data);
   void send(String data);

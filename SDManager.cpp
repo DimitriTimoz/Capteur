@@ -7,29 +7,15 @@
 
 
 
-void SDManager::init_SD_load(){
-  
-  Serial.println("Initializing SD card...");
-
-  if (!SD.begin(SD_CS)) {
-
-    Serial.println("initialization failed!");
-
-    while (1);
-
-  }
-  Serial.println("Initializing done.");
-
-}
 void SDManager::load_file(String *path, char mode){
     if(current_file){
       close_file();
     }
-    if(!SD.exists(*path)){
+    if(!SD.exists(*path) && mode == 'r'){
       create_file(path);
     }
     if(mode == 'r'){
-      current_file = SD.open(*path, FILE_READ);
+      current_file =  SD.open(*path, FILE_READ);
       read_mode = true;
       write_mode = false;
     }else if(mode == 'w') {
@@ -37,10 +23,8 @@ void SDManager::load_file(String *path, char mode){
       read_mode = false;
       write_mode = true;
     }else{
-      Serial.println(*path + " can't be open, the open mode is not correctly specified.");
       return;
     }
-    Serial.println(*path + " was correctly opened.");
     return;
   
 }
