@@ -78,15 +78,14 @@ void Recorder::variation_calcul(void){
     count = 0;
     variation_count = 0;
     sum_variation = 0.0;
-    
   }
  }
-  sum_variation += at(last_index);
+  sum_variation += at(last_index) - at(last_index-1);
 
 }
 
 void Recorder::min_and_max_calcul(void){
-  
+
   if(actual_data->min > actual){
     actual_data->min = actual; 
   }
