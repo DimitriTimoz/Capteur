@@ -4,7 +4,7 @@
 #include "connection.h"
 #include "configuration.h"
 #include "SDManager.h"
-
+#include "coder.h";
 
 // recorder object
 Recorder* recorder {nullptr};
@@ -15,6 +15,7 @@ SDManager* sd_manager {nullptr};
 
 Connection* connection {nullptr};
 
+Coder* coder {nullptr};
 
 void setup() {
   #if DEVELOPPEMENT
@@ -26,11 +27,12 @@ void setup() {
   sd_manager->init_SD_load();
   datas = new Datas();
   recorder = new Recorder(MAX_RECORD_RANGE, datas); 
+  coder = new Coder();
 }
 
 void loop() {
+  coder->loop();
   recorder->update();
   connection->loop();
-
+  
 }
-
