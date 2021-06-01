@@ -1,7 +1,7 @@
 #include "data.h"
 #include <Arduino.h>
 #include "configuration.h"
-#include <ArduinoJson.h>
+#include "SDManager.h"
 
 /*
   DATA
@@ -29,13 +29,14 @@ void Datas::add_data(Data data){
 
 void Datas::new_partition(){
   save();
+  save_config();
   record_partition_index++;
 }
 
 void Datas::save(){
   // max ; min ; grow_rate ; decline_rate
   String name_file {"/" + String(record_token) + "-" + String(record_partition_index) + ".csv"};
-
+  sd_manager->create_file(&name_file);
   sd_manager->load_file(&name_file, 'w');
   for(int i{0}; i < MAX_COUNT_FILE; i++ ){
     String to_save {""};
@@ -43,11 +44,10 @@ void Datas::save(){
     to_save += String(datas[i].min) + ";";
     to_save += String(datas[i].grow_rate) + ";";
     to_save += String(datas[i].decline_rate) + "\n";
-   // sd_manager->write_file(&name_file, &to_save, false);
+    sd_manager->write_file(&name_file, &to_save, false);
   }
-  //sd_manager->close_file();
+  sd_manager->close_file();
   send();
-  
 }
 
 void Datas::new_token(){
@@ -89,6 +89,8 @@ void Datas::send(int row){
 void Datas::save_config(){
   String name = "/" + String(record_token) + ".conf";
   sd_manager->create_file(&name);
-  
+  sd_manager->load_file(&name);
+  String content {String(record_partition_index+1)}; 
+  sd_manager->write_file(&name, &content);
+  sd_manager->close_file();
 }
-

@@ -45,7 +45,8 @@ void SDManager::create_file(String* path){
   if(SD.exists(*path)){
     SD.remove(*path);
   }
-  current_file = SD.open(*path, FILE_APPEND);
+  String name = *path;
+  current_file = SD.open(name, FILE_APPEND);
   close_file();
 }
 

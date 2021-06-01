@@ -32,14 +32,14 @@ public:
   Data* datas {nullptr};
   SDManager* sd_manager {nullptr};
   Config *configuration {nullptr};
-  Datas(SDManager* sd_manager, Config* conf, Connection* con){
+  Datas(SDManager* sd, Config* conf, Connection* con){
     datas = new Data[MAX_COUNT_FILE];
-    sd_manager = sd_manager;
+    sd_manager = sd;
     configuration = conf;
     connection = con;
-    configuration->load();
     new_token();
     configuration->add_to_save(record_token);
+        configuration->save();
   }
 
   ~Datas(){
