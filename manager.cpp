@@ -1,7 +1,14 @@
+#include "manager.h"
+
+#include <Arduino.h>
+#include "SDManager.h"
+#include "connection.h"
+#include "data.h"
+
 #include "configuration.h"
 #include "SDManager.h"
 
-void Config::add_to_save(const String name){
+void Manager::add_to_save(const String name){
   String copy[length_to_send]; 
   for(int i{0}; i < length_to_send; i++){
     copy[i] = (*to_send)[i];
@@ -10,12 +17,11 @@ void Config::add_to_save(const String name){
   to_send = new String[++length_to_send];
   for(int i{0}; i < length_to_send-1; i++){
     (*to_send+i) = copy[i];
-      connection->send(copy[i]);
   }
   (*to_send + (length_to_send - 2)) = name;
 }
 
-void Config::remove_to_save(const String name){
+void Manager::remove_to_save(const String name){
   String copy[length_to_send]; 
   for(int i{0}; i < length_to_send; i++){
     copy[i] = (*to_send)[i];
@@ -34,7 +40,7 @@ void Config::remove_to_save(const String name){
   (*to_send + (length_to_send - 2)) = name;
 }
 
-void Config::save(){
+void Manager::save(){
   String name_file {"/config.conf"};
   sd_manager->create_file(&name_file);
   String content{length_to_send};
@@ -46,7 +52,7 @@ void Config::save(){
 
 }
 
-void Config::load(){
+void Manager::load(){
   String name_file {"/config.conf"};
   String content{""};
   content = sd_manager->read_file(&name_file);
@@ -67,6 +73,16 @@ void Config::load(){
       row += content[i-1];
     }
   }
-  
+}
 
+void Manager::start_record(){
+  recording = true;
+}
+
+bool Manager::is_recording(){
+  return recording;  
+}
+
+void Manager::stop_recording(){
+  recording = false;
 }

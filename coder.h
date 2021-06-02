@@ -17,6 +17,6 @@ public:
 
   }
 
-  void loop();
+  void loop(void);
 };
 #endif

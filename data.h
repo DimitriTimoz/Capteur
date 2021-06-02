@@ -1,10 +1,11 @@
 #ifndef _DATA_H_
 #define _DATA_H_
-#include "configuration.h"
 #include "connection.h"
 #include <Arduino.h>
 #include "SDManager.h"
+#include "manager.h"
 
+class Manager;
 class Data{
 public:
   short int max{0};
@@ -26,20 +27,20 @@ public:
 
   void clear();
 }; 
-
+class Connection;
 class Datas{
 public:
   Data* datas {nullptr};
   SDManager* sd_manager {nullptr};
-  Config *configuration {nullptr};
-  Datas(SDManager* sd, Config* conf, Connection* con){
+  Manager *manager {nullptr};
+  Datas(SDManager* sd, Manager* conf, Connection* con){
     datas = new Data[MAX_COUNT_FILE];
     sd_manager = sd;
-    configuration = conf;
+    manager = conf;
     connection = con;
     new_token();
-    configuration->add_to_save(record_token);
-        configuration->save();
+    manager->add_to_save(record_token);
+    manager->save();
   }
 
   ~Datas(){

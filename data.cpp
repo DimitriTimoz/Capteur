@@ -47,7 +47,7 @@ void Datas::save(){
     sd_manager->write_file(&name_file, &to_save, false);
   }
   sd_manager->close_file();
-  send();
+  //send();
 }
 
 void Datas::new_token(){
@@ -63,7 +63,7 @@ void Datas::new_token(){
 void Datas::send(int row){
   if(!connection->is_connected())
     return;
-  connection->send("/data/" + String(record_token) + "/" + String(record_partition_index) + "/");
+  connection->send("/data/" + String(record_token) + "/" + String(record_partition_index) + "/\n");
   if(row == -1){
     for(int i{0}; i < MAX_COUNT_FILE; i++ ){
       String to_send {""};
@@ -84,7 +84,7 @@ void Datas::send(int row){
     to_send += String(datas[row].decline_rate) + "\n";
     connection->send(&to_send);
   }
-  connection->send("\end");    
+  connection->send("/end\n");    
 }
 void Datas::save_config(){
   String name = "/" + String(record_token) + ".conf";

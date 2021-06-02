@@ -1,9 +1,6 @@
 #ifndef _CONFIGURATION_H_
 #define _CONFIGURATION_H_
 
-#include <Arduino.h>
-#include "SDManager.h"
-#include "connection.h"
 
 // true: is in developpement mode
 #define DEVELOPPEMENT false
@@ -28,23 +25,5 @@
 #define PIN_CODDER 12
 #define PIN_RIGHT 13
 
-
-class Config{
-public:
-  int length_to_send{0};
-  String* to_send {nullptr};
-  SDManager* sd_manager {nullptr};
-  Connection* connection {nullptr};
-  Config(SDManager *manager, Connection *con){
-    connection = con;
-    sd_manager = manager;
-  }
-  void add_to_save(const String);
-  void remove_to_save(const String);
-
-  void save(void);
-  void load(void);
-
-};
 #endif
 

@@ -3,6 +3,8 @@
 #include "BluetoothSerial.h"
 #include "connection.h"
 #include "configuration.h"
+#include "manager.h"
+
 #include "SDManager.h"
 #include "coder.h"
 
@@ -17,15 +19,16 @@ Connection* connection {nullptr};
 
 Coder* coder {nullptr};
 
-Config* config {nullptr};
+Manager* config {nullptr};
 
 
 
-void setup() {
+void setup(void) {
   #if DEVELOPPEMENT
   Serial.begin(SERIAL_BAUD);
   #endif
-  
+  Serial.begin(115200);
+
   
   while (!SD.begin(SD_CS));
 
@@ -34,16 +37,21 @@ void setup() {
   connection = new Connection();
   connection->init_connection("BikeSensor");
   sd_manager = new SDManager();
-  config = new Config(sd_manager, connection);
+  config = new Manager(sd_manager);
+  connection->add_components(config);
   datas = new Datas(sd_manager, config, connection);
+  config->add_components(datas);
   recorder = new Recorder(MAX_RECORD_RANGE, datas); 
   coder = new Coder();
 }
 
 void loop() {
-  //coder->loop();
-  recorder->update();
+  coder->loop();
+  if(config->is_recording()){
+    recorder->update();
+  }
   delay(1);
-  //connection->loop();
+  connection->loop();
+
 }
 
