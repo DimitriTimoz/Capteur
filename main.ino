@@ -19,7 +19,7 @@ Connection* connection {nullptr};
 
 Coder* coder {nullptr};
 
-Manager* config {nullptr};
+Manager* manager {nullptr};
 
 
 
@@ -37,21 +37,20 @@ void setup(void) {
   connection = new Connection();
   connection->init_connection("BikeSensor");
   sd_manager = new SDManager();
-  config = new Manager(sd_manager);
-  connection->add_components(config);
-  datas = new Datas(sd_manager, config, connection);
-  config->add_components(datas);
+  manager = new Manager(sd_manager);
+  connection->add_components(manager);
+  datas = new Datas(sd_manager, manager, connection);
+  manager->add_components(datas);
   recorder = new Recorder(MAX_RECORD_RANGE, datas); 
   coder = new Coder();
 }
 
 void loop() {
   coder->loop();
-  if(config->is_recording()){
+  if(manager->is_recording()){
     recorder->update();
   }
   delay(1);
   connection->loop();
 
 }
-

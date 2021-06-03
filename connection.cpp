@@ -21,9 +21,7 @@ void Connection::EventHandler(){
   }
   Serial.println(args[0]);
   String response{"/none\n"};
-  for(auto c : args[0]){
-    Serial.println(int(c));
-  }
+
   if (String("battery") == args[0]){
     response = "/battery/80/end\n";
 

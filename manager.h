@@ -3,7 +3,6 @@
 #include <Arduino.h>
 #include "SDManager.h"
 #include "connection.h"
-
 #include "data.h"
 
 class Datas;
@@ -15,8 +14,8 @@ public:
   Datas* datas {nullptr};
 
 
-  Manager(SDManager *manager ){
-    sd_manager = manager;
+  Manager(SDManager *manager_sd ){
+    sd_manager = manager_sd;
   }
   inline void add_components(Datas* datas_imp){datas = datas_imp;}
   void add_to_save(const String);

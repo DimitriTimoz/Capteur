@@ -7,6 +7,7 @@
   DATA
 */
 
+
 void Data::clear(){
   max = 0;
   min = 120;
@@ -17,36 +18,65 @@ void Data::clear(){
 /*
   DATAS
 */
+void Datas::clear(void){
+
+  delete [] datas;
+
+  datas = new Data[MAX_COUNT_FILE];
+  
+  new_token();
+  record_partition_index = 0;
+  manager->add_to_save(record_token);
+
+  manager->save();
+
+}
+
+Datas::Datas(SDManager* sd, Manager* manager_imported, Connection* con){
+    datas = new Data[MAX_COUNT_FILE];
+    sd_manager = sd;
+    manager = manager_imported;
+    connection = con;
+    new_token();
+    manager->add_to_save(record_token);
+    manager->save();
+  }
+  
 void Datas::add_data(Data data){
   datas[index] = data;
   index++;
   if(index > MAX_COUNT_FILE){
-    index = 0;
     new_partition();
-
+    index = 0;
   }
 }
 
 void Datas::new_partition(){
   save();
   save_config();
+
   record_partition_index++;
 }
 
-void Datas::save(){
+void Datas::save(bool all){
   // max ; min ; grow_rate ; decline_rate
   String name_file {"/" + String(record_token) + "-" + String(record_partition_index) + ".csv"};
   sd_manager->create_file(&name_file);
   sd_manager->load_file(&name_file, 'w');
-  for(int i{0}; i < MAX_COUNT_FILE; i++ ){
+  int max = (all) ? MAX_COUNT_FILE-1 : index-1;
+
+  for(int i{0}; i <= max; i++ ){
     String to_save {""};
+    to_save += String(i+1) + ";";
     to_save += String(datas[i].max) + ";";
     to_save += String(datas[i].min) + ";";
     to_save += String(datas[i].grow_rate) + ";";
     to_save += String(datas[i].decline_rate) + "\n";
     sd_manager->write_file(&name_file, &to_save, false);
   }
+
   sd_manager->close_file();
+  Serial.println("writed in file");
   //send();
 }
 

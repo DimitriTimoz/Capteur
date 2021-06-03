@@ -2,7 +2,6 @@
 
 #include <Arduino.h>
 #include "SDManager.h"
-#include "connection.h"
 #include "data.h"
 
 #include "configuration.h"
@@ -43,6 +42,7 @@ void Manager::remove_to_save(const String name){
 void Manager::save(){
   String name_file {"/config.conf"};
   sd_manager->create_file(&name_file);
+
   String content{length_to_send};
   content += "\n";
   for(int i{0}; i < length_to_send; i++){
@@ -77,6 +77,7 @@ void Manager::load(){
 
 void Manager::start_record(){
   recording = true;
+  datas->clear();
 }
 
 bool Manager::is_recording(){
@@ -85,4 +86,10 @@ bool Manager::is_recording(){
 
 void Manager::stop_recording(){
   recording = false;
+  datas->save(false);
+      Serial.println("saved (manager)");
+
+  datas->clear();
+    Serial.println("saved cleared");
+
 }

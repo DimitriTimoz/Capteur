@@ -2,18 +2,17 @@
 #ifndef _CONNECTION_H_
 #define _CONNECTION_H_
 #include <Arduino.h>
-#include "BluetoothSerial.h"
-#include "configuration.h"
 #include "manager.h"
+#include "BluetoothSerial.h"
 
 #if !defined(CONFIG_BT_ENABLED) || !defined(CONFIG_BLUEDROID_ENABLED)
 #error Bluetooth is not enabled! Please run `make menuconfig` to and enable it
 #endif
-
+class Manager;
 class Connection{
 public:
   inline bool is_connected(void){ return SerialBT.connected();};
-  inline void add_components(Manager *mana){manager = mana;}
+  inline void add_components(Manager *manager_import){manager = manager_import;}
   void send(char* data, size_t length);
   void send(String* data);
   void send(String data);
@@ -27,7 +26,6 @@ private:
   String line {""};
   void EventHandler(void);
   Manager *manager{nullptr};
-  //create the bluetooth serial object
  
 };
 #endif
