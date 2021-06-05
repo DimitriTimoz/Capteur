@@ -19,16 +19,13 @@ void Data::clear(){
   DATAS
 */
 void Datas::clear(void){
+  for(int i{0}; i < MAX_COUNT_FILE; i++){
+    datas[i].clear();
+  }
 
-  delete [] datas;
-
-  datas = new Data[MAX_COUNT_FILE];
-  
   new_token();
   record_partition_index = 0;
-  manager->add_to_save(record_token);
-
-  manager->save();
+  record_partition_number = 1;
 
 }
 
@@ -53,14 +50,15 @@ void Datas::add_data(Data data){
 
 void Datas::new_partition(){
   save();
-  save_config();
+  
 
   record_partition_index++;
+  record_partition_number++;
 }
 
 void Datas::save(bool all){
   // max ; min ; grow_rate ; decline_rate
-  String name_file {"/" + String(record_token) + "-" + String(record_partition_index) + ".csv"};
+  String name_file {"/" + record_token + "-" + String(record_partition_index) + ".csv"};
   sd_manager->create_file(&name_file);
   sd_manager->load_file(&name_file, 'w');
   int max = (all) ? MAX_COUNT_FILE-1 : index-1;
@@ -76,15 +74,58 @@ void Datas::save(bool all){
   }
 
   sd_manager->close_file();
+  save_config();
   Serial.println("writed in file");
-  //send();
+}
+void Datas::load(){
+  String name_file {"/" + record_token + "-" + String(record_partition_index) + ".csv"};
+  sd_manager->load_file(&name_file, 'r');
+  int j{0}; 
+  while (sd_manager->current_file.available()) {
+    String buffer = sd_manager->current_file.readStringUntil('\n');
+    String vals[5];
+    int count {0};
+    for(int i{0}; i < buffer.length(); i++){
+      if(buffer[i] == ';'){
+        count++;
+        i++;
+      }
+      vals[count] += buffer[i];
+    }
+    Data data(vals[1].toInt(), vals[2].toInt(), vals[3].toInt(), vals[4].toInt());
+    datas[j] = data;
+    j++;
+  }
+
+  sd_manager->close_file();
+ 
+}
+void Datas::send_all(String token){
+  manager->load();
+  if(sd_manager->exist("/" + token + ".conf")){
+
+    load_config(token);
+    record_token = token;
+    connection->send("/reply/send/"+ token + "/end\n");
+    for(int i {0}; i < record_partition_number; i++){
+      load();
+      send();
+      record_partition_index++;
+    }
+    connection->send("/reply/sended/"+ token + "/end\n");
+
+  }else{
+    connection->send("/reply/error/1/end\n");
+  }
+  
 }
 
 void Datas::new_token(){
-  for(size_t i{0}; i < token_length; i++){
-    record_token[i] = (char)random(65,90);
+  record_token = "";
+  for(size_t i{0}; i < 10; i++){
+    record_token += (char)random(65,90);
   }
-  if(sd_manager->exist(String(record_token) + "-0.csv")){
+  if(sd_manager->exist(record_token + "-0.csv")){
     new_token();
   }else{
     return;
@@ -93,11 +134,10 @@ void Datas::new_token(){
 void Datas::send(int row){
   if(!connection->is_connected())
     return;
-  connection->send("/data/" + String(record_token) + "/" + String(record_partition_index) + "/\n");
   if(row == -1){
     for(int i{0}; i < MAX_COUNT_FILE; i++ ){
       String to_send {""};
-      to_send += String(i) + ";";
+      to_send += String(i + record_partition_index * MAX_COUNT_FILE) + ";";
       to_send += String(datas[i].max) + ";";
       to_send += String(datas[i].min) + ";";
       to_send += String(datas[i].grow_rate) + ";";
@@ -114,13 +154,20 @@ void Datas::send(int row){
     to_send += String(datas[row].decline_rate) + "\n";
     connection->send(&to_send);
   }
-  connection->send("/end\n");    
 }
 void Datas::save_config(){
-  String name = "/" + String(record_token) + ".conf";
+  String name = "/" + record_token + ".conf";
   sd_manager->create_file(&name);
-  sd_manager->load_file(&name);
-  String content {String(record_partition_index+1)}; 
+  sd_manager->load_file(&name, 'w');
+  String content {String(record_partition_number)}; 
   sd_manager->write_file(&name, &content);
   sd_manager->close_file();
 }
+
+void Datas::load_config(String token){
+  String name = "/" + token + ".conf";
+  sd_manager->load_file(&name, 'r');
+  record_partition_number = sd_manager->get_file_content_str().toInt();
+  sd_manager->close_file();
+}
+

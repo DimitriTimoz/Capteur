@@ -21,10 +21,11 @@ public:
   void add_to_save(const String);
   void remove_to_save(const String);
   void start_record(void);
-  void stop_recording(void);
+  String stop_recording(void);
   bool is_recording(void);
   void save(void);
   void load(void);
+  void send(String* token);
 private:
   bool recording {false};
 

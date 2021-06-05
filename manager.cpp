@@ -48,6 +48,7 @@ void Manager::save(){
   for(int i{0}; i < length_to_send; i++){
     content += (*to_send)[i] + "\n";
   }
+  Serial.println(content);
   sd_manager->write_file(&name_file, &content);
 
 }
@@ -63,6 +64,7 @@ void Manager::load(){
       if(c_row == 0){
         length_to_send = row.toInt();
         to_send = new String[length_to_send];
+
       }else{
         to_send[c_row-1] = row;
       }
@@ -84,12 +86,15 @@ bool Manager::is_recording(){
   return recording;  
 }
 
-void Manager::stop_recording(){
+String Manager::stop_recording(){
   recording = false;
   datas->save(false);
-      Serial.println("saved (manager)");
-
+  String token = datas->get_token();
   datas->clear();
-    Serial.println("saved cleared");
+  return token;
+}
 
+void Manager::send(String* token){
+  Serial.println("manager recieve request");
+  datas->send_all(*token);
 }

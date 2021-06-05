@@ -8,8 +8,8 @@
 
 class Data{
 public:
-  short int max{0};
-  short int min{0};
+  int max{0};
+  int min{0};
 
   float grow_rate{0};
   float decline_rate{0};
@@ -19,6 +19,8 @@ public:
     min = min_val;
     grow_rate = grow_val;
     decline_rate = decline_val;
+  }
+  ~Data(){
   }
   
   void clear();
@@ -38,22 +40,24 @@ public:
   }
   void add_data(Data data); 
   void save(bool all = true); 
-  void load(char token[5], int partition);
+  void send_all(String token);
   void send(int row = -1);
   void clear(void);
 
+  inline String get_token(){return record_token;}
+
 private:
-  size_t token_length{5};
-  char record_token[5];
+  String record_token;
   int record_partition_index{0};
+  int record_partition_number{1};
   int index {0};
   String* list;
 
   Connection* connection {nullptr};
-
+  void load();
   void new_token(void);
   void new_partition(void);
-  void load_config(char token[5]);
+  void load_config(String token);
   void save_config(void);
 };
 

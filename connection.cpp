@@ -23,15 +23,24 @@ void Connection::EventHandler(){
   String response{"/none\n"};
 
   if (String("battery") == args[0]){
-    response = "/battery/80/end\n";
+    response = "/reply/battery/80/end\n";
 
   }else if(String("start") == args[0]){
-    response = "/start/1/end\n";
+    response = "/reply/start/1/end\n";
     manager->start_record();
 
   }else if(String("stop") == args[0]){
-    response = "/stop/1/end\n";
-    manager->stop_recording();
+    String token = manager->stop_recording();
+    response = "/reply/stopped/" + token +"/end\n";
+
+  }else if(String("send") == args[0]){
+    if(args[1].length() >4){
+      manager->send(&args[1]);
+
+    }else{
+      response = "/reply/error/invalid token/end\n";
+    }
+   
 
   }
   send(response);
@@ -42,13 +51,13 @@ void Connection::EventHandler(){
 void Connection::loop(void){
   if (SerialBT.available()) {
     int b = SerialBT.read();
-    if(b == 10 || b == 13){
-      return;
-    }
-    line += (char)b;
 
-    for(int i {0}; i < line.length()-1; i++){
-      if(line[i] == '\\' &&  line[i+1] == 'n'){
+    line += (char)b;
+    Serial.print((char)b);
+    for(int i {0}; i < line.length(); i++){
+      if(line[i] == '\n' ){
+        Serial.println("end line");
+
         Serial.println(line);
         EventHandler();
         line = "";
