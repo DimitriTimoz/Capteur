@@ -135,7 +135,8 @@ void Datas::send(int row){
   if(!connection->is_connected())
     return;
   if(row == -1){
-    for(int i{0}; i < MAX_COUNT_FILE; i++ ){
+    int max = (record_partition_index == record_partition_number-1)? index + 1 : MAX_COUNT_FILE;
+    for(int i{0}; i < max; i++ ){
       String to_send {""};
       to_send += String(i + record_partition_index * MAX_COUNT_FILE) + ";";
       to_send += String(datas[i].max) + ";";
@@ -143,7 +144,6 @@ void Datas::send(int row){
       to_send += String(datas[i].grow_rate) + ";";
       to_send += String(datas[i].decline_rate) + "\n";
       connection->send(&to_send);
-      delay(1);
     }
   }else{
     String to_send {""};
@@ -159,7 +159,7 @@ void Datas::save_config(){
   String name = "/" + record_token + ".conf";
   sd_manager->create_file(&name);
   sd_manager->load_file(&name, 'w');
-  String content {String(record_partition_number)}; 
+  String content {String(record_partition_number)+ "\n" + String(index)}; 
   sd_manager->write_file(&name, &content);
   sd_manager->close_file();
 }
@@ -167,7 +167,10 @@ void Datas::save_config(){
 void Datas::load_config(String token){
   String name = "/" + token + ".conf";
   sd_manager->load_file(&name, 'r');
-  record_partition_number = sd_manager->get_file_content_str().toInt();
+  String content = sd_manager->get_file_content_str();
+  int pos = content.indexOf('\n');
+  record_partition_number = content.substring(0, pos).toInt();
+  index = content.substring(pos).toInt();
   sd_manager->close_file();
 }
 
