@@ -16,7 +16,7 @@ public:
     pinMode(PIN_RIGHT, OUTPUT);
 
   }
-
+  int position(void);
   void loop(void);
 };
 #endif

@@ -3,7 +3,7 @@
 #define _RECORDER_H_
 
 #include "data.h"
-
+#include "coder.h"
 
 class Recorder{
 public:
@@ -30,6 +30,7 @@ public:
   void update(void);
 private:
   //properties
+  Coder coder;
   int last_index {0};
   int sum {0};
 

@@ -12,7 +12,7 @@
 #if DEVELOPPEMENT
   #define MAX_COUNT_FILE 20
 #else
-  #define MAX_COUNT_FILE 100
+  #define MAX_COUNT_FILE 250
 #endif
 // the number of data to use for the mean
 #define MEAN_COUNT 5
@@ -24,6 +24,9 @@
 #define PIN_LEFT 11
 #define PIN_CODDER 12
 #define PIN_RIGHT 13
+
+
+#define PIN_BUTTON 17
 
 #endif
 

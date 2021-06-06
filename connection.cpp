@@ -56,10 +56,9 @@ void Connection::loop(void){
     Serial.print((char)b);
     for(int i {0}; i < line.length(); i++){
       if(line[i] == '\n' ){
-        Serial.println("end line");
-
         Serial.println(line);
         EventHandler();
+        manager->updated();
         line = "";
         return;
       }

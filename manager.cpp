@@ -48,7 +48,6 @@ void Manager::save(){
   for(int i{0}; i < length_to_send; i++){
     content += (*to_send)[i] + "\n";
   }
-  Serial.println(content);
   sd_manager->write_file(&name_file, &content);
 
 }
@@ -95,6 +94,5 @@ String Manager::stop_recording(){
 }
 
 void Manager::send(String* token){
-  Serial.println("manager recieve request");
   datas->send_all(*token);
 }

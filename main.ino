@@ -6,7 +6,6 @@
 #include "manager.h"
 
 #include "SDManager.h"
-#include "coder.h"
 
 // recorder object
 Recorder* recorder {nullptr};
@@ -16,8 +15,6 @@ Datas* datas {nullptr};
 SDManager* sd_manager{nullptr};
 
 Connection* connection {nullptr};
-
-Coder* coder {nullptr};
 
 Manager* manager {nullptr};
 
@@ -41,16 +38,17 @@ void setup(void) {
   connection->add_components(manager);
   datas = new Datas(sd_manager, manager, connection);
   manager->add_components(datas);
+
   recorder = new Recorder(MAX_RECORD_RANGE, datas); 
-  coder = new Coder();
 }
 
 void loop() {
-  coder->loop();
   if(manager->is_recording()){
     recorder->update();
+    manager->updated();
+
   }
   delay(1);
   connection->loop();
-
+  manager->TimeOut();
 }

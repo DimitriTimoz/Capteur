@@ -58,6 +58,8 @@ void Datas::new_partition(){
 
 void Datas::save(bool all){
   // max ; min ; grow_rate ; decline_rate
+    save_config();
+
   String name_file {"/" + record_token + "-" + String(record_partition_index) + ".csv"};
   sd_manager->create_file(&name_file);
   sd_manager->load_file(&name_file, 'w');
@@ -74,7 +76,6 @@ void Datas::save(bool all){
   }
 
   sd_manager->close_file();
-  save_config();
   Serial.println("writed in file");
 }
 void Datas::load(){
@@ -115,6 +116,7 @@ void Datas::send_all(String token){
     connection->send("/reply/sended/"+ token + "/end\n");
 
   }else{
+    Serial.println("error");
     connection->send("/reply/error/1/end\n");
   }
   

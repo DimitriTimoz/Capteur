@@ -16,3 +16,7 @@ void Coder::loop(){
       last = digitalRead(PIN_CODDER);
     }
 }
+
+int Coder::position(void){
+  return (int)(((float)count / (20.0f * 3.0f)) * 40);
+}
