@@ -31,16 +31,16 @@ public:
 
 
   void TimeOut(){
-  
+  /*
     if((millis()/1000) - last_activity > 300){
       esp_sleep_enable_ext0_wakeup(GPIO_NUM_4,1);
       Serial.println("Going to sleep now");
       updated();
       delay(1000);
-      Serial.flush(); 
-      esp_light_sleep_start();
+     // Serial.flush(); 
+     // esp_light_sleep_start();
   
-    }
+    }*/
   }
 private:
   bool recording {false};

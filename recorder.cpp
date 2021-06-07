@@ -24,11 +24,11 @@ short Recorder::at(int index, short value){
   return value;
 }
 
-short Recorder::record_value(float x){
-  x /= 15; 
+short Recorder::record_value(){
+  x += (3.14 / 100.0); 
   double cosArr {(cos(x)+1)};
-
-  return (cosArr)*50 +(random(0.0, 10)*cos(x));
+  return coder.position();
+  return (cosArr)*40; //+(random(0.0, 4.0)*(cos(x)+1));
   
 
 }
@@ -47,12 +47,18 @@ void Recorder::mean_data(int n){
 
 void Recorder::update(void){
   //record
-  actual = record_value((double)last_index);
+  coder.loop();
+  actual = coder.position();
   at(last_index, actual);
   //mean
+  //Serial.print("0,0,0,0"+ String(actual) + ",");
+
+
   sum += at(last_index);
   mean_data(MEAN_COUNT);
   actual = sum/MEAN_COUNT;
+  //Serial.println(actual);
+
   at(last_index, actual);
  
   variation_calcul();
@@ -62,28 +68,62 @@ void Recorder::update(void){
   update_index();
 
 }
-
-void Recorder::variation_calcul(void){
- if((actual >= at(last_index-1)) != decline ){
-  count++;
-  variation_count++;
-  if(count >= RANGE){
-    if(decline){
-      actual_data->decline_rate = sum_variation/float(variation_count);
-    }else{
-      actual_data->grow_rate;
-      all_data->add_data(*actual_data);
-    }
-    decline = !decline;
-    count = 0;
-    variation_count = 0;
-    sum_variation = 0.0;
-  }
- }
-  sum_variation += at(last_index) - at(last_index-1);
-
+void Recorder::change(){
+  actual_data->decline_rate = sum_variation/float(variation_count);
+  Serial.println("min: " + String(actual_data->min) + " max: "+ String(actual_data->max));
+  all_data->add_data(*actual_data);
+  actual_data->clear(at(last_index)); 
+  count = 0;
+  variation_count = 0;
+  sum_variation = 0.0; 
 }
+void Recorder::variation_calcul(void){
+  int var {0};
+  if((at(last_index-1) > actual)){
+    var = -1;    
 
+  }else if(at(last_index-1) < actual){
+    var = 1;
+  }else{
+    var = 0;
+  }
+
+  if(var == -1){
+    if(decline){
+      count = 0;
+      variation_count = 0;
+      sum_variation = 0.0; 
+      
+    }else{
+      count++;
+      if (count > RANGE){
+        count = 0;
+        actual_data->grow_rate = sum_variation/float(variation_count);
+        decline = true;
+      }
+    }
+  }else if(var == 1){
+    if(!decline){
+        count = 0;
+
+    }else{
+      count++;
+      if (count > RANGE){
+        count = 0;
+        decline = false;
+          change();
+
+      }
+    }
+  }
+
+
+  sum_variation += at(last_index) - at(last_index-1);
+  variation_count++;
+
+    
+  
+}
 void Recorder::min_and_max_calcul(void){
 
   if(actual_data->min > actual){
@@ -91,7 +131,8 @@ void Recorder::min_and_max_calcul(void){
   }
 
   if(actual_data->max < actual){
-    actual_data->max = actual; 
+    actual_data->max = actual;
+ 
   }
 }
 

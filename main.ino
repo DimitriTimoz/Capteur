@@ -48,7 +48,7 @@ void loop() {
     manager->updated();
 
   }
-  delay(1);
+  delay(10);
   connection->loop();
   manager->TimeOut();
 }

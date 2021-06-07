@@ -23,7 +23,7 @@ public:
   ~Data(){
   }
   
-  void clear();
+  void clear(int defaultVal = 0);
 }; 
 
 class Connection;

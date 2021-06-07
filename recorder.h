@@ -33,19 +33,25 @@ private:
   Coder coder;
   int last_index {0};
   int sum {0};
-
+  float x {0};
   bool decline {false};
   int count {0};
   int sum_variation{0};
   int variation_count{0};
+  
+  int var{0};
+
+  long long last_variation {0};
   //methods
   int get_index(int);
-  short record_value(float x);
+  short record_value(void);
   
   void update_index(){last_index = last_index % length;}
   void mean_data(int n);
   void variation_calcul(void);
   void min_and_max_calcul(void);
+
+  void change();
 };
 
 

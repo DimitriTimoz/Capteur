@@ -19,7 +19,6 @@ void Connection::EventHandler(){
       count++;
     }
   }
-  Serial.println(args[0]);
   String response{"/none\n"};
 
   if (String("battery") == args[0]){
@@ -53,10 +52,8 @@ void Connection::loop(void){
     int b = SerialBT.read();
 
     line += (char)b;
-    Serial.print((char)b);
     for(int i {0}; i < line.length(); i++){
       if(line[i] == '\n' ){
-        Serial.println(line);
         EventHandler();
         manager->updated();
         line = "";

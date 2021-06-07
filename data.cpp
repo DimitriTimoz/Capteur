@@ -8,9 +8,9 @@
 */
 
 
-void Data::clear(){
-  max = 0;
-  min = 120;
+void Data::clear(int defaultVal){
+  max = defaultVal;
+  min = defaultVal;
   grow_rate = 0;
   decline_rate = 0;
 }
@@ -24,6 +24,7 @@ void Datas::clear(void){
   }
 
   new_token();
+  index = 0;
   record_partition_index = 0;
   record_partition_number = 1;
 
@@ -76,7 +77,6 @@ void Datas::save(bool all){
   }
 
   sd_manager->close_file();
-  Serial.println("writed in file");
 }
 void Datas::load(){
   String name_file {"/" + record_token + "-" + String(record_partition_index) + ".csv"};
@@ -116,7 +116,6 @@ void Datas::send_all(String token){
     connection->send("/reply/sended/"+ token + "/end\n");
 
   }else{
-    Serial.println("error");
     connection->send("/reply/error/1/end\n");
   }
   
@@ -137,7 +136,7 @@ void Datas::send(int row){
   if(!connection->is_connected())
     return;
   if(row == -1){
-    int max = (record_partition_index == record_partition_number-1)? index + 1 : MAX_COUNT_FILE;
+    int max = (record_partition_index == record_partition_number-1)? index  : MAX_COUNT_FILE;
     for(int i{0}; i < max; i++ ){
       String to_send {""};
       to_send += String(i + record_partition_index * MAX_COUNT_FILE) + ";";

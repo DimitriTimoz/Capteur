@@ -8,15 +8,17 @@
 class Coder{
 public:
   int count {0};
-  bool up {false};
-  bool last {false};
+
   Coder(){
-    pinMode(PIN_CODDER, OUTPUT);
-    pinMode(PIN_LEFT, OUTPUT);
-    pinMode(PIN_RIGHT, OUTPUT);
+    pinMode(PIN_CODDER, INPUT);
+    pinMode(PIN_LEFT, INPUT);
+    pinMode(PIN_RIGHT, INPUT);
 
   }
   int position(void);
   void loop(void);
+private:
+  bool up {false};
+  bool last {false};
 };
 #endif

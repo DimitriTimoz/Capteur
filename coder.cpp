@@ -4,7 +4,7 @@
 
 void Coder::loop(){
    digitalRead(PIN_CODDER);
-    
+
     if(digitalRead(PIN_CODDER) != last){
       if(digitalRead(PIN_LEFT)){
         up = true;
@@ -18,5 +18,5 @@ void Coder::loop(){
 }
 
 int Coder::position(void){
-  return (int)(((float)count / (20.0f * 3.0f)) * 40);
+  return (int)(((float)count / (120.0f)) * 126.0);
 }

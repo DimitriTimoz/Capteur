@@ -15,15 +15,15 @@
   #define MAX_COUNT_FILE 250
 #endif
 // the number of data to use for the mean
-#define MEAN_COUNT 5
+#define MEAN_COUNT 8
 // the number of up record to comfirm up
-#define RANGE 4
+#define RANGE 5
 // the number of data in a range
 #define MAX_RECORD_RANGE 500
 
-#define PIN_LEFT 11
-#define PIN_CODDER 12
-#define PIN_RIGHT 13
+#define PIN_LEFT 12
+#define PIN_CODDER 27
+#define PIN_RIGHT 14
 
 
 #define PIN_BUTTON 17
