@@ -51,13 +51,13 @@ void Recorder::update(void){
   actual = coder.position();
   at(last_index, actual);
   //mean
-  //Serial.print("0,0,0,0"+ String(actual) + ",");
+  Serial.print("0,0,0,0"+ String(actual) + ",");
 
 
   sum += at(last_index);
   mean_data(MEAN_COUNT);
   actual = sum/MEAN_COUNT;
-  //Serial.println(actual);
+  Serial.println(actual);
 
   at(last_index, actual);
  
@@ -135,5 +135,3 @@ void Recorder::min_and_max_calcul(void){
  
   }
 }
-
-
